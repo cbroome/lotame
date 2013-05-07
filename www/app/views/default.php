@@ -20,10 +20,10 @@
                         
                         <thead>
                                 <tr>
-                                       <th>Name</th>
-                                       <th>Page Views</th>
-                                       <th>Audience Targeting Code</th>
-                                       <th>Uniques</th>
+                                       <th class="sort s_name">Name</th>
+                                       <th class="sort s_page_views">Page Views</th>
+                                       <th class="sort s_target_code">Audience Targeting Code</th>
+                                       <th class="sort s_uniques">Uniques</th>
                                 </tr>
                         </thead>
                         <tbody>

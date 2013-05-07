@@ -1,50 +1,6 @@
 (function ($) {
 
 
-
-
-
-
-
-
-/*
-Friend = Backbone.Model.extend({
-        //Create a model to hold friend atribute
-        name: null
-});
-
-Friends = Backbone.Collection.extend({
-        //This is our Friends collection and holds our Friend models
-        initialize: function (models, options) {
-                this.bind("add", options.view.addFriendLi);
-                //Listen for new additions to the collection and call a view function if so
-        }
-});
-
-AppView = Backbone.View.extend({
-        el: $("body"),
-        initialize: function () {
-                this.friends = new Friends( null, { view: this });
-                //Create a friends collection when the view is initialized.
-                //Pass it a reference to this view to create a connection between the two
-        },
-        events: {
-                "click #add-friend":  "showPrompt",
-        },
-        showPrompt: function () {
-                var friend_name = prompt("Who is your friend?");
-                var friend_model = new Friend({ name: friend_name });
-                //Add a new friend model to our friend collection
-                this.friends.add( friend_model );
-        },
-        addFriendLi: function (model) {
-                //The parameter passed is a reference to the model that was added
-                $("#friends-list").append("<li>" + model.get('name') + "</li>");
-                //Use .get to receive attributes of the model
-        }
-});
-*/
-
 Audience = Backbone.Model.extend({
    
    name:        '',
@@ -75,6 +31,7 @@ AppView = Backbone.View.extend({
            // Load available audiences
            $.get('http://dev.christopherbroome.com/?p=service', function(data){
               if (data instanceof Array) {
+		 // Per instructions, just grab the first 20...
                  for (var i=0, obj = null; (obj=data[i]) && (i < 20); i++) {
                     var aud_model = new Audience({
                        name:          obj.audienceName,
@@ -89,24 +46,30 @@ AppView = Backbone.View.extend({
               }
            }, "json");
 
+	   // Allow for sorting:
+	   $("#target-table th").click( function(){ $self.resort(this, $self); } );
 
              
         },
         events: {
-                    
         },
         
         
         /**
          *
          * @param string   sort  The property to sort on...
+	 * @param string   direction ASC or DESC
          */
-        getSorted: function(sort) {
+        getSorted: function(sort, direction) {
             
             var arr = [];
             var sort_column = '';
             var tbody = $("#target-table tbody");
-            
+	    if(direction == undefined || direction == null) {
+              direction = 'ASC'; 
+            }            
+
+	    $("#target-table th").removeClass('ASC').removeClass('DESC').removeClass('active');
             tbody.empty();
             
             if (sort == undefined || sort == null) {
@@ -119,40 +82,63 @@ AppView = Backbone.View.extend({
                arr.push( aud );
             });
             
-            
-            arr.sort( function(a, b) {
-               /*
-               var rv;
-               if ( isNaN( a[ sort_column ]) ) {
-                  rv = a[ sort_column ].localeCompare( b[sort_column] );
-               }
-               else {
-                  rv = a[ sort_column ] - b[sort_column ];
-               }
-               return rv;
-               */
-               
-               console.log(sort_column, a);
-               if(a.get(sort_column) == b.get(sort_column)){
-                 return 0;
-               }
+            if(direction == 'ASC') {
+            	arr.sort( function(a, b) {
+            	   if(a.get(sort_column) == b.get(sort_column)){
+            	     return 0;
+            	   }
              
-               return a.get(sort_column) > b.get(sort_column) ? 1 : -1;               
-            });
+            	   return a.get(sort_column) > b.get(sort_column) ? 1 : -1;               
+            	});
+	    }
+	    else {
+            	arr.sort( function(a, b) {
+           	    if(b.get(sort_column) == a.get(sort_column)){
+           	      return 0;
+           	    }
+
+           	    return b.get(sort_column) > a.get(sort_column) ? 1 : -1;
+            	});
+	    }
             
             
             for( var i = 0, obj = null; obj = arr[i]; i++ ) {
-               tbody.append(
-                  '<tr>'
-                  + '<td class="s_name">' + obj.get('name') + '</td>'
-                  + '<td class="s_page_views number">' + obj.get('page_views') + '</td>'
-                  + '<td class="s_target_code">' + obj.get('target_code') + '</td>'
-                  + '<td class="s_uniques number">' + obj.get('uniques') + '</td>'
-                  + '</tr>'
-               );
+
+	       var string = '<tr>';
+	       
+               for(var prop in obj.attributes) {
+		var row_class = 's_' + prop;
+		if(sort_column == prop) {
+			row_class += ' active';
+		}
+		if( i % 2 == 0 ) {
+			row_class += ' even';
+		}
+		else {
+			row_class += ' odd';
+		}
+	        string += '<td class="'+row_class+'">' + obj.get(prop) + '</td>';
+	       }
+
+	       string += '</tr>';
+
+               tbody.append( string );
             }
+
+	    // Change the th tag to reflect the direction
+	    $("th.s_"+sort_column).addClass( direction ).addClass('active'); 
          
         },
+
+	resort: function( $this, $view ) {
+		var classname = $($this).attr('class'),
+			sort_column = classname.match(/s_([a-z_]+)/)[1], 
+			direction = classname.match(/ASC/) ? 'DESC' : 'ASC';
+		
+		if(sort_column) {
+			$view.getSorted( sort_column, direction );
+		}
+	},
 
 
         renderRow: function(){

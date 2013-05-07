@@ -15,15 +15,28 @@ h1, h2, h3, h4, h5 {
  ===================================================== */
 
 #target-table th {
+	cursor: pointer;
+}
+
+#target-table th,
+#target-table td {
         border-bottom: 1px solid;
-        padding: 0 5px;
+        padding: 2px 20px;
 }
 
 #target-table td.number {
         text-align: right;
 }
 
-#target-table td {
-        border-bottom: 1px solid;
-        padding: 2px 15px;
+#target-table td.even {
+	background: #dedede;
 }
+
+#target-table td.active.even {
+	background: #E8F1FA;
+}
+
+#target-table td.active.odd {
+	background: #F3F8FC;
+}
+
