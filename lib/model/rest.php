@@ -44,7 +44,7 @@ class Rest extends \Lib\Model {
                 
                 $token = $this->getToken();
                 
-                $session = curl_init($restUrl);
+                $session = curl_init($this->host . $endpoint);
                 curl_setopt($session, CURLOPT_HTTPHEADER, array("Authorization: $token","Accept: application/json"));
                 curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
                 
@@ -52,6 +52,7 @@ class Rest extends \Lib\Model {
                 $jsonResponse = curl_exec($session);
                 
                 curl_close($session);
+                
                 $rv = json_decode($jsonResponse);
                 
                 

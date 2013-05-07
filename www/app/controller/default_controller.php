@@ -13,7 +13,10 @@ class Default_Controller extends \Lib\Controller {
          *
          */
         public function default_action() {
-                print "Default!";
+                
+                # this is awful, but in the interest of time...
+                include DIR_APP . "/views/default.php";
+                
         }
         
 }

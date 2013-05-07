@@ -1,5 +1,12 @@
 (function ($) {
 
+
+
+
+
+
+
+
 /*
 Friend = Backbone.Model.extend({
         //Create a model to hold friend atribute
@@ -52,6 +59,10 @@ Audience = Backbone.Model.extend({
 Audiences = Backbone.Collection.extend({
         //This is our Friends collection and holds our Friend models
         initialize: function (models, options) {
+         
+
+         
+         
         }
 });
 
@@ -59,18 +70,29 @@ Audiences = Backbone.Collection.extend({
 AppView = Backbone.View.extend({
         el: $("#target-table"),
         initialize: function() {
-                this.audiences = new Audiences( null, { view: this });
-                
-                // Load available audiences
-                
-                
+            this.audiences = new Audiences( null, { view: this });
+            
+           // Load available audiences
+           $.get('http://dev.christopherbroome.com/?p=service', function(data){
+              if (data instanceof Array) {
+                 for (var i=0, obj = null; obj=data[i]; i++) {
+                    var aud_model = new Audience({
+                       name:          obj.name,
+                       page_views:    obj.pageViews,
+                       // target_code:   obj.audienceTargetingCode,
+                       uniques:       obj.uniques,
+                    });
+                    this.audiences.add( aud_model )                     
+                    
+                 }
+              }
+           }, "json");
+             
         },
         events: {
                     
         },
-        loadAudiences: function(){
-                alert("Loading Audiences");
-        },
+
         renderRow: function(){
                 
         }

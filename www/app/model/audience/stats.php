@@ -3,12 +3,20 @@ namespace Model\Audience;
 
 class Stats extends \Lib\Model\Rest {
         
-        
+        /**
+         *
+         * @return      stats objects
+         */
         public function getStats() {
                 
                 
-                $this->request("cc/audiencestatsservice");
+                $result = $this->request("audstats/reports/topAudiences");
                 
+                if(!$result->stat) {
+                        throw \Exception("Malformed response, no stat property");
+                }
+                
+                return $result->stat;                
         }
         
         
