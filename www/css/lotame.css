@@ -18,3 +18,12 @@ h1, h2, h3, h4, h5 {
         border-bottom: 1px solid;
         padding: 0 5px;
 }
+
+#target-table td.number {
+        text-align: right;
+}
+
+#target-table td {
+        border-bottom: 1px solid;
+        padding: 2px 15px;
+}

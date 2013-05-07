@@ -14,9 +14,9 @@
 
         <div class="main">
                 
-                <h1>Lotame UI Test</h1>
+                <h1>UI Test</h1>
                 
-                <table id="target-table">
+                <table id="target-table" cellpadding="5" cellspacing="0">
                         
                         <thead>
                                 <tr>

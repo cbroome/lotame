@@ -70,28 +70,90 @@ Audiences = Backbone.Collection.extend({
 AppView = Backbone.View.extend({
         el: $("#target-table"),
         initialize: function() {
+            var $self = this; 
             this.audiences = new Audiences( null, { view: this });
-            
            // Load available audiences
            $.get('http://dev.christopherbroome.com/?p=service', function(data){
               if (data instanceof Array) {
-                 for (var i=0, obj = null; obj=data[i]; i++) {
+                 for (var i=0, obj = null; (obj=data[i]) && (i < 20); i++) {
                     var aud_model = new Audience({
-                       name:          obj.name,
+                       name:          obj.audienceName,
                        page_views:    obj.pageViews,
-                       // target_code:   obj.audienceTargetingCode,
+                       target_code:   obj.audienceTargetingCode ? obj.audienceTargetingCode : "&nbsp;",
                        uniques:       obj.uniques,
                     });
-                    this.audiences.add( aud_model )                     
+                    $self.audiences.add( aud_model );
                     
                  }
+                 $self.getSorted( 'name' );
               }
            }, "json");
+
+
              
         },
         events: {
                     
         },
+        
+        
+        /**
+         *
+         * @param string   sort  The property to sort on...
+         */
+        getSorted: function(sort) {
+            
+            var arr = [];
+            var sort_column = '';
+            var tbody = $("#target-table tbody");
+            
+            tbody.empty();
+            
+            if (sort == undefined || sort == null) {
+               sort_column = 'name';
+            }
+            else {
+               sort_column = sort;
+            }
+            this.audiences.each( function(aud) {
+               arr.push( aud );
+            });
+            
+            
+            arr.sort( function(a, b) {
+               /*
+               var rv;
+               if ( isNaN( a[ sort_column ]) ) {
+                  rv = a[ sort_column ].localeCompare( b[sort_column] );
+               }
+               else {
+                  rv = a[ sort_column ] - b[sort_column ];
+               }
+               return rv;
+               */
+               
+               console.log(sort_column, a);
+               if(a.get(sort_column) == b.get(sort_column)){
+                 return 0;
+               }
+             
+               return a.get(sort_column) > b.get(sort_column) ? 1 : -1;               
+            });
+            
+            
+            for( var i = 0, obj = null; obj = arr[i]; i++ ) {
+               tbody.append(
+                  '<tr>'
+                  + '<td class="s_name">' + obj.get('name') + '</td>'
+                  + '<td class="s_page_views number">' + obj.get('page_views') + '</td>'
+                  + '<td class="s_target_code">' + obj.get('target_code') + '</td>'
+                  + '<td class="s_uniques number">' + obj.get('uniques') + '</td>'
+                  + '</tr>'
+               );
+            }
+         
+        },
+
 
         renderRow: function(){
                 
