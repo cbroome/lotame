@@ -20,8 +20,8 @@
 $startTime = microtime(true);
 
 // Set up our username and password
-$username = 'YOUR USERNAME/EMAIL GOES HERE';
-$password = 'YOUR PASSWORD GOES HERE';
+$username = 'chris.a.broome@gmail.com';
+$password = 'TSHmeiths';
 
 // set up our request to get the token
 $restUrl = 'https://api.lotame.com/';

@@ -13,7 +13,7 @@ class Default_Controller extends \Lib\Controller {
          *
          */
         public function default_action() {
-                
+                print "Default!";
         }
         
 }

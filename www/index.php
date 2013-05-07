@@ -15,4 +15,14 @@ require DIR_LIB . "/autoloader.php";
 $page   = isset($_GET['p']) ? $_GET['p'] : 'default';
 $action = isset($_GET['a']) ? $_GET['a'] : 'default';
 
-$controller = new \Controller\Default_Controller; 
+
+
+
+# $controller = new \Controller\Default_Controller;
+
+$classname = "\Controller\\" . ucwords($page) . "_Controller";  
+$method = $action . "_action";
+$controller = new $classname;
+$controller->$method();
+
+
