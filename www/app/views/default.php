@@ -15,7 +15,10 @@
         <div class="main">
                 
                 <h1>UI Test</h1>
-                
+
+		<div>
+			<a href="#" id="export-csv">Export to CSV</a>
+		</div>             
                 <table id="target-table" cellpadding="5" cellspacing="0">
                         
                         <thead>

@@ -24,7 +24,8 @@ Audiences = Backbone.Collection.extend({
 
 
 AppView = Backbone.View.extend({
-        el: $("#target-table"),
+        //  el: $("#target-table"),
+	el: $("body"),
         initialize: function() {
             var $self = this; 
             this.audiences = new Audiences( null, { view: this });
@@ -49,9 +50,10 @@ AppView = Backbone.View.extend({
 	   // Allow for sorting:
 	   $("#target-table th").click( function(){ $self.resort(this, $self); } );
 
-             
+          
         },
         events: {
+		"click #export-csv": "exportToCSV"
         },
         
         
@@ -84,20 +86,27 @@ AppView = Backbone.View.extend({
             
             if(direction == 'ASC') {
             	arr.sort( function(a, b) {
-            	   if(a.get(sort_column) == b.get(sort_column)){
+		   var a_val = isNaN(a.get(sort_column)) ? a.get(sort_column).toLowerCase() : a.get(sort_column),
+			b_val = isNaN(b.get(sort_column)) ? b.get(sort_column).toLowerCase() : b.get(sort_column);
+
+            	   if( a_val== b_val ){
             	     return 0;
             	   }
              
-            	   return a.get(sort_column) > b.get(sort_column) ? 1 : -1;               
+            	   return a_val > b_val ? 1 : -1;               
             	});
 	    }
 	    else {
             	arr.sort( function(a, b) {
-           	    if(b.get(sort_column) == a.get(sort_column)){
+                   var a_val = isNaN(a.get(sort_column)) ? a.get(sort_column).toLowerCase() : a.get(sort_column),
+                        b_val = isNaN(b.get(sort_column)) ? b.get(sort_column).toLowerCase() : b.get(sort_column);
+
+
+           	    if(b_val == a_val){
            	      return 0;
            	    }
 
-           	    return b.get(sort_column) > a.get(sort_column) ? 1 : -1;
+           	    return b_val > a_val ? 1 : -1;
             	});
 	    }
             
@@ -140,10 +149,32 @@ AppView = Backbone.View.extend({
 		}
 	},
 
+	exportToCSV: function() {
 
-        renderRow: function(){
-                
-        }
+		var lines = ''; 
+		$("#target-table tbody tr").each(function() { 
+			var line = '';
+			$(this).find('td').each(function() { 
+				if(line) {
+					line += ',';
+				}
+				line += '"' + $(this).text().trim() + '"';
+			}) 
+	
+		
+			lines += line + "\n"; 
+	
+		});
+
+		var form = $('<form method="post" action="/index.php?p=service&a=csv" />'),
+			csv_field = $('<input type="hidden" name="csv" />');
+		form.append(csv_field);
+		$(csv_field).val(lines); 
+
+		$("body").append(form);
+		form.submit(); 
+		return false;
+	}
 });
 
 

@@ -22,5 +22,18 @@ class Service_Controller extends \Lib\Controller {
                 
                 print json_encode($stats);
         }
-        
+ 
+	/**
+	 *
+	 *
+	 */
+	public function csv_action() {
+		// should mask this...
+		$csv_string = $_POST['csv'];
+		header('Content-type: text/csv');
+		header('Content-disposition: attachment;filename=audiences.csv');
+		die($csv_string);
+	}
+
+       
 }
